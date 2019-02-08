@@ -43,7 +43,7 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
 [
   {
     "name": "${var.stack_name}-hhg-task",
-    "image": "mongo:latest",
+    "image": "jpbarto/hhg:latest",
     "cpu": 1024,
     "memory": 2048,
     "essential": true,
