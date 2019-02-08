@@ -1,5 +1,10 @@
 #!/bin/sh
 
+curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI -o /tmp/credentials.json
+export AWS_ACCESS_KEY_ID=`jq '.AccessKeyId' /tmp/credentials.json`
+export AWS_SECRET_ACCESS_KEY=`jq '.SecretAccessKey' /tmp/credentials.json`
+export AWS_SECURITY_TOKEN=`jq '.Token' /tmp/credentials.json`
+
 echo "Configuring environment to nuke AWS account"
 env
 
