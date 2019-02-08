@@ -1,7 +1,7 @@
 provider "aws" {}
 
 resource "aws_iam_role" "hhg_role" {
-  name = "HHGRole"
+  name = "${var.stack_name}-HHGRole"
 
   assume_role_policy = <<EOF
 {
@@ -27,21 +27,25 @@ resource "aws_iam_role_policy_attachment" "hhg_admin_permissions" {
 
 # hhg ECS cluster
 resource "aws_ecs_cluster" "hhg_cluster" {
-  name = "hhg-cluster"
+  name = "${var.stack_name}-hhg-cluster"
 }
 
 resource "aws_ecs_task_definition" "hhg_task_def" {
-  family = "hhg"
+  family = "${var.stack_name}-hhg"
+  network_mode = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu = "1024"
+  memory = "2048"
+  task_role_arn = "${aws_iam_role.hhg_role.arn}"
+  execution_role_arn = "${aws_iam_role.hhg_role.arn}"
 
   container_definitions = <<DEFINITION
 [
   {
-    "name": "hgg-task",
+    "name": "${var.stack_name}-hhg-task",
     "image": "mongo:latest",
     "cpu": 1024,
     "memory": 2048,
-    "taskRoleArn": "${aws_iam_role.hhg_role.arn}",
-    "executionRoleArn": "${aws_iam_role.hhg_role.arn}",
     "essential": true,
     "environment": [
         {
