@@ -49,6 +49,10 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
     "essential": true,
     "environment": [
         {
+            "name": "AWS_ACCOUNT_ID",
+            "value": "${var.aws_account_id}"
+        },
+        {
             "name": "AWS_ACCOUNT_NAME",
             "value": "${var.aws_account_name}"
         },
