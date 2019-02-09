@@ -4,6 +4,9 @@ import os
 CLUSTER_NAME = os.environ['CLUSTER_NAME']
 TASK_DEF_ARN = os.environ['TASK_DEF_ARN']
 
+print ("Running task {}".format (TASK_DEF_ARN))
+print ("On cluster {}".format (CLUSTER_NAME))
+
 ecs = boto3.client ('ecs')
 ec2 = boto3.client ('ec2')
 
@@ -12,14 +15,13 @@ def viable_subnets ():
 
     subnets = ec2.describe_subnets ()
     for subnet in subnets['Subnets']:
-        if 'MapPublicIpOnLaunch' in subnet and subnet['MapPublicIpOnLaunch']:
-            viable.append (subnet['SubnetId'])
-            break
+        viable.append (subnet['SubnetId'])
+        break
 
     return viable
 
 
-def throw_grenade (event, context):
+def pull_the_pin (event, context):
     subnets = viable_subnets ()
 
     run_resp = ecs.run_task (
@@ -33,4 +35,6 @@ def throw_grenade (event, context):
         }
     )
 
-    return run_resp
+    if 'failures' in run_resp and len(run_resp['failures']) > 0:
+        return run_resp['failures']
+    return {'executing': TASK_DEF_ARN}

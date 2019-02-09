@@ -14,6 +14,7 @@ env
 # update the configuration file for the current environment
 # update the targeted account number
 sed -i.bak -e 's/TARGET-AWS-ACCOUNT-NUMBER/'"$AWS_ACCOUNT_ID"'/g' aws-nuke.conf
+sed -i.bak -e 's/OUTPUT-LOG-GROUP/'"$CW_OUTPUT_LOG_GROUP"'/g' aws-nuke.conf
 
 echo "aws-nuke configuration file follows..."
 cat /aws-nuke.conf

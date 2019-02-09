@@ -12,7 +12,10 @@ resource "aws_iam_role" "hhg_role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
+        "Service": [
+            "ecs-tasks.amazonaws.com",
+            "lambda.amazonaws.com"
+        ]
       },
       "Effect": "Allow",
       "Sid": ""
@@ -59,12 +62,12 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
             "value": "${var.aws_account_id}"
         },
         {
-            "name": "AWS_ACCOUNT_NAME",
-            "value": "${var.aws_account_name}"
-        },
-        {
             "name": "ECS_CLUSTER_ARN",
             "value": "${aws_ecs_cluster.hhg_cluster.arn}"
+        },
+        {
+            "name": "CW_OUTPUT_LOG_GROUP",
+            "value": "${aws_cloudwatch_log_group.hhg_log_group.arn}"
         }
     ],
     "logConfiguration": {
@@ -78,4 +81,28 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
   }
 ]
 DEFINITION
+}
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_dir  = "src"
+  output_path = "lambda.zip"
+}
+
+resource "aws_lambda_function" "pull_the_pin" {
+  filename         = "lambda.zip"
+  source_code_hash = "${data.archive_file.lambda_zip.output_base64sha256}"
+  function_name    = "${var.stack_name}-PullThePin"
+  role             = "${aws_iam_role.hhg_role.arn}"
+  description      = "Start the ECS task running to execute AWS-Nuke"
+  handler          = "hhg.pull_the_pin"
+  runtime          = "python3.6"
+  timeout          = 60
+
+  environment = {
+    variables = {
+      CLUSTER_NAME = "${aws_ecs_cluster.hhg_cluster.name}"
+      TASK_DEF_ARN = "${aws_ecs_task_definition.hhg_task_def.arn}"
+    }
+  }
 }
