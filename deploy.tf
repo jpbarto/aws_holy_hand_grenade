@@ -28,6 +28,10 @@ resource "aws_iam_role_policy_attachment" "hhg_admin_permissions" {
 }
 
 # hhg ECS cluster
+resource "aws_cloudwatch_log_group" "hhg_log_group" {
+  name = "/ecs/${var.stack_name}-hhg-output"
+}
+
 resource "aws_ecs_cluster" "hhg_cluster" {
   name = "${var.stack_name}-hhg-cluster"
 }
