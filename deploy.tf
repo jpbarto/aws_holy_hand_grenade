@@ -1,5 +1,7 @@
 provider "aws" {}
 
+data "aws_region" "current" {}
+
 resource "aws_iam_role" "hhg_role" {
   name = "${var.stack_name}-HHGRole"
 
@@ -31,13 +33,13 @@ resource "aws_ecs_cluster" "hhg_cluster" {
 }
 
 resource "aws_ecs_task_definition" "hhg_task_def" {
-  family = "${var.stack_name}-hhg"
-  network_mode = "awsvpc"
+  family                   = "${var.stack_name}-hhg"
+  network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu = "1024"
-  memory = "2048"
-  task_role_arn = "${aws_iam_role.hhg_role.arn}"
-  execution_role_arn = "${aws_iam_role.hhg_role.arn}"
+  cpu                      = "1024"
+  memory                   = "2048"
+  task_role_arn            = "${aws_iam_role.hhg_role.arn}"
+  execution_role_arn       = "${aws_iam_role.hhg_role.arn}"
 
   container_definitions = <<DEFINITION
 [
@@ -60,7 +62,15 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
             "name": "ECS_CLUSTER_ARN",
             "value": "${aws_ecs_cluster.hhg_cluster.arn}"
         }
-    ]
+    ],
+    "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/${var.stack_name}-hhg-output",
+          "awslogs-region": "${data.aws_region.current.name}",
+          "awslogs-stream-prefix": "ecs"
+        }
+    }
   }
 ]
 DEFINITION
