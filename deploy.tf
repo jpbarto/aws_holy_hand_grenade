@@ -58,16 +58,20 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
     "essential": true,
     "environment": [
         {
-            "name": "AWS_ACCOUNT_ID",
+            "name": "TARGET_AWS_ACCOUNT_NUMBER",
             "value": "${var.aws_account_id}"
         },
         {
-            "name": "ECS_CLUSTER_ARN",
+            "name": "HHG_ECS_CLUSTER",
             "value": "${aws_ecs_cluster.hhg_cluster.arn}"
         },
         {
-            "name": "CW_OUTPUT_LOG_GROUP",
-            "value": "${aws_cloudwatch_log_group.hhg_log_group.arn}"
+            "name": "HHG_LOG_GROUP",
+            "value": "/ecs/${var.stack_name}-hhg-output"
+        },
+        {
+          "name": "HHG_IAM_ROLE",
+          "value": "${aws_iam_role.hhg_role.name}"
         }
     ],
     "logConfiguration": {
