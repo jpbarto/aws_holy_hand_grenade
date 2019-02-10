@@ -30,7 +30,8 @@ def pull_the_pin (event, context):
         launchType = 'FARGATE',
         networkConfiguration = {
             'awsvpcConfiguration': {
-                'subnets': subnets
+                'subnets': subnets,
+                'assignPublicIp': 'ENABLED'
             }
         }
     )
