@@ -15,6 +15,8 @@ cat /aws-nuke.conf
 echo "END OF FILE"
 
 echo "Running aws-nuke..."
-/aws-nuke --force --no-dry-run \
+timeout -t 3600 /aws-nuke --force --no-dry-run \
     -c /aws-nuke.conf \
     --profile default
+
+echo "aws-nuke completed normally"
