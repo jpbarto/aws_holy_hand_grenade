@@ -9,4 +9,4 @@ COPY aws-nuke-v2.7.0-linux-amd64 /aws-nuke
 COPY run_aws_nuke.sh /run_aws_nuke.sh
 COPY aws-nuke.conf /aws-nuke.conf
 
-CMD ["timeout", "-t", "1800", "/run_aws_nuke.sh"]
+CMD ["timeout", "-t", "3600", "/run_aws_nuke.sh"]
