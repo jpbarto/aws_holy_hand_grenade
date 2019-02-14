@@ -19,4 +19,4 @@ timeout -t 3600 /aws-nuke --force --no-dry-run \
     -c /aws-nuke.conf \
     --profile default
 
-echo "aws-nuke completed normally"
+echo "aws-nuke run complete"
