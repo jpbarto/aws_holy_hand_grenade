@@ -89,7 +89,7 @@ DEFINITION
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "src"
+  source_dir  = "../src"
   output_path = "lambda.zip"
 }
 
