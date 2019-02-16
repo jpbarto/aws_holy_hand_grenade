@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "hhg_task_def" {
 [
   {
     "name": "${var.stack_name}-hhg-task",
-    "image": "jpbarto/hhg:latest",
+    "image": "jpbarto/aws_holy_hand_grenade:latest",
     "cpu": 1024,
     "memory": 2048,
     "essential": true,
