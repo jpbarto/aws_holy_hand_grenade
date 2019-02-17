@@ -110,3 +110,23 @@ resource "aws_lambda_function" "pull_the_pin" {
     }
   }
 }
+
+resource "aws_sns_topic" "pull_the_pin_topic" {
+  name = "${var.stack_name}-pull-the-pin"
+}
+
+resource "aws_sns_topic_subscription" "pull_the_pin_subscription" {
+  topic_arn = "${aws_sns_topic.pull_the_pin_topic.arn}"
+  protocol  = "lambda"
+  endpoint  = "${aws_lambda_function.pull_the_pin.arn}"
+}
+
+resource "aws_budgets_budget" "pull_the_pin_cost" {
+  name = "${var.stack_name}-PullThePinThreshold"
+  budget_type  = "COST"
+  limit_amount = "${var.trigger_cost}"
+  limit_unit   = "USD"
+  time_period_start = "2017-07-01_00:00"
+  time_unit         = "MONTHLY"
+}
+
