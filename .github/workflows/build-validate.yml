@@ -11,3 +11,10 @@ jobs:
             - name: Listing files in the repo
               run: |
                 ls ${{ github.workspace }}
+            - name: Install OpenTofu
+              uses: opentofu/setup-opentofu@v1
+
+            - name: Validate Terraform code
+              working-directory: ./terraform
+              run: |
+                tofu validate
