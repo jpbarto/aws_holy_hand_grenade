@@ -9,9 +9,8 @@ RUN apk --no-cache update && \
     pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
-RUN wget $NUKE_URL && tar xzf $NUKE_TAR
+RUN wget $NUKE_URL && tar xzf $NUKE_TAR && mv aws-nuke /aws-nuke
 
-COPY ./aws-nuke /aws-nuke
 COPY ./docker/run_aws_nuke.sh /run_aws_nuke.sh
 COPY ./docker/aws-nuke.conf /aws-nuke.conf
 
