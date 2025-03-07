@@ -6,7 +6,6 @@ ENV NUKE_URL="https://github.com/ekristen/aws-nuke/releases/download/${NUKE_VER}
 
 RUN apk --no-cache update && \
     apk --no-cache add jq python3 py-pip py-setuptools ca-certificates curl wget groff less aws-cli && \
-    pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
 RUN wget $NUKE_URL && tar xzf $NUKE_TAR && mv aws-nuke /aws-nuke
