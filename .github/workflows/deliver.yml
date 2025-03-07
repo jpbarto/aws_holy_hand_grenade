@@ -28,6 +28,12 @@ jobs:
                 username: ${{ secrets.DH_USER }}
                 password: ${{ secrets.DH_PASS }}
 
+            - name: Setup QEMU
+              uses: docker/setup-qemu-action@v3
+
+            - name: Setup Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
             - name: Extract metadata (tags, labels) for Docker
               id: meta
               uses: docker/metadata-action@v3
@@ -37,6 +43,7 @@ jobs:
             - name: Build and push Docker image
               uses: docker/build-push-action@v6
               with:
+                platforms: linux/amd64,linux/arm64
                 context: .
                 file: ./docker/Dockerfile
                 push: true
