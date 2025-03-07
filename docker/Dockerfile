@@ -11,7 +11,7 @@ RUN apk --no-cache update && \
 
 RUN wget $NUKE_URL && tar xzf $NUKE_TAR
 
-COPY docker/aws-nuke /aws-nuke
+COPY aws-nuke /aws-nuke
 COPY docker/run_aws_nuke.sh /run_aws_nuke.sh
 COPY docker/aws-nuke.conf /aws-nuke.conf
 
