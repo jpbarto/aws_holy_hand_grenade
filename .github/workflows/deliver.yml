@@ -1,0 +1,54 @@
+name: Validate, build, and deliver to DockerHub
+run-name: ${{ github.actor }} is building and validating code
+on: [push]
+jobs:
+    Validate-TF:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+            - name: Check out repository
+              uses: actions/checkout@v4
+
+            - name: Listing files in the repo
+              run: |
+                ls ${{ github.workspace }}
+
+            - name: Install OpenTofu
+              uses: opentofu/setup-opentofu@v1
+
+            - name: Validate Terraform code
+              working-directory: ./terraform
+              run: |
+                tofu init && tofu validate
+
+            - name: Log in to Docker Hub
+              uses: docker/login-action
+              with:
+                username: ${{ secrets.DH_USER }}
+                password: ${{ secrets.DH_PASS }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action
+              with:
+                images: jpbarto/aws_holy_hand_grenade
+
+            - name: Build and push Docker image
+              uses: docker/build-push-action
+              with:
+                context: .
+                file: ./Dockerfile
+                push: true
+                tags: ${{ steps.meta.outputs.tags }}
+                labels: ${{ steps.meta.outputs.labels }}
+
+            - name: Generate artifact attestation
+              uses: actions/attest-build-provenance@v2
+              with:
+                subject-name: index.docker.io/jpbarto/aws_holy_hand_grenade
+                subject-digest: ${{ steps.push.outputs.digest }}
+                push-to-registry: true
+
+
+            
