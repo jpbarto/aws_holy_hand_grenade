@@ -6,11 +6,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - run: echo "Branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
             - name: Check out repository
               uses: actions/checkout@v4
+
             - name: Listing files in the repo
               run: |
                 ls ${{ github.workspace }}
+
             - name: Install OpenTofu
               uses: opentofu/setup-opentofu@v1
 

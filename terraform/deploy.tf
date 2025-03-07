@@ -103,7 +103,7 @@ resource "aws_lambda_function" "pull_the_pin" {
   runtime          = "python3.6"
   timeout          = 60
 
-  environment = {
+  environment {
     variables = {
       CLUSTER_NAME = "${aws_ecs_cluster.hhg_cluster.name}"
       TASK_DEF_ARN = "${aws_ecs_task_definition.hhg_task_def.arn}"
